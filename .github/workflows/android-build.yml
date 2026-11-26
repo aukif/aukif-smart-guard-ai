@@ -30,7 +30,7 @@ jobs:
       - name: Build debug APK
         run: gradle --no-daemon :app:assembleDebug
 
-     - name: Verify APK
+      - name: Verify APK
         shell: bash
         run: |
           set -euo pipefail
