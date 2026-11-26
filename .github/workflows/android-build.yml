@@ -30,15 +30,30 @@ jobs:
       - name: Build debug APK
         run: gradle --no-daemon :app:assembleDebug
 
-      - name: Verify APK
+     - name: Verify APK
+        shell: bash
         run: |
-          unzip -l "$APK" | grep -E 'classes.dex|lib/|AndroidManifest.xml'
-          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -n 1)/aapt" dump badging "$APK"
+          set -euo pipefail
+
           APK="app/build/outputs/apk/debug/app-debug.apk"
+
+          echo "=== CHECK FILE ==="
+          ls -lh "$APK"
           test -s "$APK"
-          unzip -t "$APK"
+
+          echo "=== CHECK ZIP ==="
+          unzip -t "$APK" | tail -n 3
+
+          echo "=== CHECK CONTENT ==="
+          unzip -l "$APK" | grep -E 'classes.dex|lib/|AndroidManifest.xml'
+
+          echo "=== CHECK SIGNATURE ==="
           APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)
           "$APKSIGNER" verify --verbose --print-certs "$APK"
+
+          echo "=== APK INFORMATION ==="
+          AAPT=$(find "$ANDROID_HOME/build-tools" -name aapt | sort -V | tail -n 1)
+          "$AAPT" dump badging "$APK"
 
       - name: Upload APK
         uses: actions/upload-artifact@v5
