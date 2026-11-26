@@ -33,35 +33,22 @@ jobs:
       - name: Verify APK
         shell: bash
         run: |
+          APK="$GITHUB_WORKSPACE/app/build/outputs/apk/debug/app-debug.apk"
+
           echo "=== APK SIZE ==="
-          du -h "$APK"
-
-          echo "=== APK MANIFEST ==="
-          AAPT=$(find "$ANDROID_HOME/build-tools" -name aapt | sort -V | tail -n 1)
-          "$AAPT" dump badging "$APK"
-
-          echo "=== APK ZIP CONTENT ==="
-          unzip -l "$APK" | head -n 30
-          set -euo pipefail
-          APK="app/build/outputs/apk/debug/app-debug.apk"
-
-          echo "=== CHECK FILE ==="
           ls -lh "$APK"
+
+          echo "=== CHECK APK ==="
           test -s "$APK"
-
-          echo "=== CHECK ZIP ==="
           unzip -t "$APK" | tail -n 3
-
-          echo "=== CHECK CONTENT ==="
-          unzip -l "$APK" | grep -E 'classes.dex|lib/|AndroidManifest.xml'
-
-          echo "=== CHECK SIGNATURE ==="
-          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)
-          "$APKSIGNER" verify --verbose --print-certs "$APK"
 
           echo "=== APK INFORMATION ==="
           AAPT=$(find "$ANDROID_HOME/build-tools" -name aapt | sort -V | tail -n 1)
           "$AAPT" dump badging "$APK"
+
+          echo "=== APK SIGNATURE ==="
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)
+          "$APKSIGNER" verify --verbose --print-certs "$APK"
 
       - name: Upload APK
         uses: actions/upload-artifact@v5
