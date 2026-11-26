@@ -32,6 +32,8 @@ jobs:
 
       - name: Verify APK
         run: |
+          unzip -l "$APK" | grep -E 'classes.dex|lib/|AndroidManifest.xml'
+          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -n 1)/aapt" dump badging "$APK"
           APK="app/build/outputs/apk/debug/app-debug.apk"
           test -s "$APK"
           unzip -t "$APK"
