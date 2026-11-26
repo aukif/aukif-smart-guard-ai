@@ -11,8 +11,8 @@ android {
         applicationId = "com.aukif.smartguardai"
         minSdk = 23
         targetSdk = 32
-        versionCode = 1
-        versionName = "1.0-alpha01"
+        versionCode = 2
+        versionName = "1.0-alpha02"
     }
 
     buildTypes {
