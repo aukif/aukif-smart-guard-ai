@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         })
         val item = MediaItem.fromUri(Uri.parse(cameraUrl))
         val source = RtspMediaSource.Factory()
-            .setForceUseRtpTcp(true)
+            .setForceUseRtpTcp(false)
             .createMediaSource(item)
         exo.setMediaSource(source)
         exo.prepare()
