@@ -96,8 +96,30 @@ class MainActivity : AppCompatActivity() {
             }
             override fun onPlayerError(error: PlaybackException) {
                 status.text = "● KONEKSI GAGAL"
-                Toast.makeText(this@MainActivity, error.message ?: "Gagal membuka RTSP", Toast.LENGTH_LONG).show()
-            }
+
+        val detail = buildString {
+            append("Kode: ${error.errorCodeName}\n")
+            append("Pesan: ${error.message}\n")
+
+        var cause = error.cause
+        var level = 1
+
+        while (cause != null && level <= 5) {
+            append("\nPenyebab $level: ${cause.javaClass.simpleName}")
+            append("\n${cause.message}")
+            cause = cause.cause
+            level++
+        }
+    }
+
+    Toast.makeText(
+        this@MainActivity,
+        detail,
+        Toast.LENGTH_LONG
+    ).show()
+
+    status.text = "● ERROR: ${error.errorCodeName}"
+}
         })
         val item = MediaItem.fromUri(Uri.parse(cameraUrl))
         val source = RtspMediaSource.Factory()
